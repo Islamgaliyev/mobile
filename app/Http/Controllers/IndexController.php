@@ -6,6 +6,7 @@ use App\User;
 use DB;
 use Validator;
 use Session;
+use Redirect;
 class IndexController extends Controller
 {
 //
@@ -45,13 +46,17 @@ class IndexController extends Controller
 	public function fixShow($id){
 
 		$situation = new_image::select(['id'])->where('id',$id)->first();
-		return view('index-2')->with(['fixed_situation' => $situation]);
+		return view('index-2')->with(['fixed_situation' => $situation]);  
 	}
 
 
 	public function fixSituation($id,Request $request){
 		$current_id = $id;
 		if($request->isMethod('post')){
+              
+            if(empty($request['works'])){
+            	return Redirect::back()->withErrors(['Добавьте описание']);
+            }
 
 			if($request->hasFile('fixed_file1')) {
 				$file1  = $request->file('fixed_file1');
@@ -71,14 +76,11 @@ class IndexController extends Controller
 
 
 			if(!($request->hasFile('fixed_file1'))&&!($request->hasFile('fixed_file2'))&&!($request->hasFile('fixed_file3')))
-
 			{  
-				$message_error = 'Загрузите фотографию';
-				return redirect('show_fix_situation/'.$current_id)->with([
-					'message_error' => $message_error
-					]);
+				return Redirect::back()->withErrors(['Загрузите фотографию!']);
 				exit();
 			}
+
 			DB::table('new_images')->where('id',$id)->update([
 
 				'fixed_file1'=> $_FILES['fixed_file1']['name'],
@@ -86,9 +88,9 @@ class IndexController extends Controller
 				'fixed_file3' => $_FILES['fixed_file3']['name'],
 				'works'=> $request['works']
 				]);
-			return redirect()->back();
-
+			//return redirect()->back();
 		}
+		return view('index-8');  
 	}
 
 

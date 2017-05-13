@@ -14,7 +14,10 @@
   <div class="header-inf">Исправить</div>
   <div class="main">
     <div class="form-wrap">
-
+      @if ($errors->any())
+      <center><div class="error">{{ $errors->first() }}</div></center>
+      <br>
+      @endif
       <form action="{{ route('fixSituation',['id'=>$fixed_situation->id]) }}" enctype="multipart/form-data" method="POST">
         <p style="color:#023351;font-weight: 700;text-align:center;font-size:18px;">Загрузить фотографии</p><p>До трех фото. Следует загрузить хотя бы одно общее и хотя бы одно детальное фото</p>
         <ul class="add-photo">
